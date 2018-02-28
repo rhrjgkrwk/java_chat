@@ -28,7 +28,7 @@ public class GUIChatServer extends JFrame implements ActionListener{
 				}
 			);
 		btn_exit.addActionListener(this);
-		//----------------------------------
+		//--------------------------------
 	}
 	
 	public void actionPerformed(ActionEvent e) {
