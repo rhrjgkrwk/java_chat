@@ -1,15 +1,39 @@
 package swing.chat;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.TextArea;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
 
-public class GUIChatClient extends JFrame implements ActionListener{
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+public class GUIChatClient extends JFrame implements ActionListener, Runnable{
 	JPanel cardPane, connectPane, chatPane;
 	JLabel  msg;
 	JButton btn_connect, btn_send, btn_exit;
 	JTextField txt_server_ip, txt_name, txt_input;
-	JTextArea txt_list;
+	TextArea txt_list;
 	CardLayout card;
+	
+	//테스트1-------------------------------------------------
+	String ip_txt;                             // IP를 저장할변수
+	Socket sock;
+	final int PORT=7500;
+	PrintWriter pw=null;                  //송신스트림
+	BufferedReader br=null;             //수신스트림
+	//테스트1-------------------------------------------------
+	
 	
 	public GUIChatClient()
 	{
@@ -29,14 +53,8 @@ public class GUIChatClient extends JFrame implements ActionListener{
 		add(cardPane);
 		setSize(400,300);
 		setVisible(true);
-		addWindowListener(
-			new WindowAdapter(){
-				public void windowClosing(WindowEvent e)
-				{
-					System.exit(0);
-				}
-			}
-		);
+		
+		super.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		//이벤트처리-----------------------
 		btn_connect.addActionListener(this);
 		btn_exit.addActionListener(this);
@@ -74,7 +92,7 @@ public class GUIChatClient extends JFrame implements ActionListener{
 	{
 		chatPane = new JPanel();
 		JPanel  pn = new JPanel();
-		txt_list = new JTextArea();
+		txt_list = new TextArea();
 		txt_input = new JTextField("",20);
 		btn_send = new JButton("전송");
 		btn_exit = new JButton("종료");
@@ -91,14 +109,36 @@ public class GUIChatClient extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		Object ob = e.getSource();
 		if(ob == btn_connect)
+		{
 			card.show(cardPane, "채팅창");
+			//테스트1-----------------------------------------------
+			ip_txt=txt_server_ip.getText();
+			Thread th=new Thread(this);    // implements Runnable  추가
+			th.start();
+			//테스트1-----------------------------------------------
+		}
 		if(ob ==btn_exit)
 			System.exit(0);
+	}
+	
+	@Override
+	public void run() {
+		//테스트1-----------------------------------------------
+		try{
+			sock=new Socket(ip_txt, PORT);
+			
+			
+			
+		}catch(IOException e){
+			e.printStackTrace();
+		}		
+		//테스트1-----------------------------------------------
 	}
 	
 	public static void main(String[] args) {
 		new GUIChatClient();
 	}
+	
 }
 
 
